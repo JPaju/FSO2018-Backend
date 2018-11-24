@@ -1,0 +1,27 @@
+{
+  "name": "fso2018backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch" : "nodemon index.js",
+    "test": "echo \"Error: no tests made yet.\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JPaju/FSO2018-Backend.git"
+  },
+  "author": "Jaakko Paju",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JPaju/FSO2018-Backend/issues"
+  },
+  "homepage": "https://github.com/JPaju/FSO2018-Backend#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}

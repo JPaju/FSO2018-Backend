@@ -22,12 +22,14 @@ let notes = [
   }
 ]
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
-
 app.get('/notes', (req, res) => {
   res.json(notes)
+})
+
+app.get('/notes/:id', (req, res) => {
+  const id = request.params.id
+  const note = notes.find(note => note.id === id)
+  response.json(note)
 })
 
 const PORT = 3001

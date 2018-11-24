@@ -3,6 +3,9 @@
 */.pnp
 .pnp.js
 
+#development
+rest_client/
+
 # misc
 .DS_Store
 .env.local

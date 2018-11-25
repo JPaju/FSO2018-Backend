@@ -42,13 +42,19 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.get('/info', (request, response) => {
-  response.writeHead(200, {'Content-Type': 'text/html'})
+  response.writeHead(200, { 'Content-Type': 'text/html' })
   response.write(`<div>Puhelinluettelossa on ${contacts.length} yhteystietoa </div>`)
   response.end("<div>" + new Date().toString() + "</div>")
 })
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
+  
+  if (!body.number || !body.name)
+    return response.status(400).json({ error: 'name and number is required' })
+  if (contacts.some(c => c.name === body.name))
+    return response.status(400).json({ error: 'name must be unique' })
+    
   const contact = {
     name: body.name,
     nummber: body.number,

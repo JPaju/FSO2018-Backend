@@ -29,18 +29,24 @@ let contacts = [
 ]
 
 
-
 app.get('/api/persons', (request, response) => {
   response.json(contacts)
 })
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const contact = contacts.find(c => c.id === id)
+  contact ?
+    res.json(contact) :
+    res.status(404).end()
+})
+
 
 app.get('/info', (request, response) => {
   response.writeHead(200, {'Content-Type': 'text/html'})
   response.write(`<div>Puhelinluettelossa on ${contacts.length} yhteystietoa </div>`)
   response.end("<div>" + new Date().toString() + "</div>")
 })
-
-const generateId = () => contacts.length > 0 ? contacts.map(c => c.id).sort((a, b) => a - b).reverse()[0] + 1 : 1
 
 
 const PORT = 3001

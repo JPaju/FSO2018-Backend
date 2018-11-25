@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 
 
 let contacts = [
@@ -49,7 +51,7 @@ app.get('/info', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  
+
   if (!body.number || !body.name)
     return response.status(400).json({ error: 'name and number is required' })
   if (contacts.some(c => c.name === body.name))

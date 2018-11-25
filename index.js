@@ -48,6 +48,12 @@ app.get('/info', (request, response) => {
   response.end("<div>" + new Date().toString() + "</div>")
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  contacts = contacts.filter(c => c.id !== id)
+  response.status(204).end()
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {

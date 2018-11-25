@@ -41,12 +41,25 @@ app.get('/api/persons/:id', (req, res) => {
     res.status(404).end()
 })
 
-
 app.get('/info', (request, response) => {
   response.writeHead(200, {'Content-Type': 'text/html'})
   response.write(`<div>Puhelinluettelossa on ${contacts.length} yhteystietoa </div>`)
   response.end("<div>" + new Date().toString() + "</div>")
 })
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  const contact = {
+    name: body.name,
+    nummber: body.number,
+    id: generateId(),
+  }
+
+  contacts = contacts.concat(contact)
+  response.json(body)
+})
+
+const generateId = () => Math.floor(Math.random() * 10000)
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)

@@ -1,9 +1,11 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 app.use(bodyParser.json())
-
+app.use(cors())
+app.use(express.static('build'))
 
 let notes = [
   {
@@ -28,11 +30,11 @@ let notes = [
 
 
 
-app.get('/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
   res.json(notes)
 })
 
-app.get('/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res) => {
   const id = Number(req.params.id)
   const note = notes.find(n => n.id === id)
   note ?
@@ -40,7 +42,7 @@ app.get('/notes/:id', (req, res) => {
     res.status(404).end()
 })
 
-app.post('/notes', (request, response) => {
+app.post('/api/notes', (request, response) => {
   const body = request.body
   if (!body.content)
     return response.status(400).json({ error: 'content is required' })
@@ -56,17 +58,16 @@ app.post('/notes', (request, response) => {
   response.json(body)
 })
 
-const generateId = () => notes.length > 0 ? notes.map(n => n.id).sort((a, b) => a - b).reverse()[0] + 1 : 1
-
-app.delete('/notes/:id', (request, response) => {
+app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id)
   notes = notes.filter(note => note.id !== id)
   response.status(204).end()
 })
 
+const generateId = () => notes.length > 0 ? notes.map(n => n.id).sort((a, b) => a - b).reverse()[0] + 1 : 1
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

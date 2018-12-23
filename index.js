@@ -2,8 +2,10 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
+app.use(cors())
 
 morgan.token('json',(req, res) => JSON.stringify(req['body']))
 app.use(morgan(':method :url :json :status :res[content-length] - :response-time ms'))
@@ -60,7 +62,7 @@ app.post('/api/persons', (request, response) => {
     
   const contact = {
     name: body.name,
-    nummber: body.number,
+    number: body.number,
     id: generateId(),
   }
 
@@ -68,14 +70,13 @@ app.post('/api/persons', (request, response) => {
   response.json(body)
 })
 
-const generateId = () => Math.floor(Math.random() * 10000)
-
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   contacts = contacts.filter(c => c.id !== id)
   response.status(204).end()
 })
 
+const generateId = () => Math.floor(Math.random() * 10000)
 
 const PORT = 3001
 app.listen(PORT, () => {

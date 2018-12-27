@@ -88,9 +88,17 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
+  Contact
+    .findByIdAndRemove(request.params.id)
+    .then(response.status(204).end())
+    .catch(err => console.error("ERROR:", err.message))
+  
+  
+  /*
   const id = Number(request.params.id)
   contacts = contacts.filter(c => c.id !== id)
   response.status(204).end()
+  */
 })
 
 

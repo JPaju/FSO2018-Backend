@@ -45,22 +45,3 @@ if (content) {
 } else {
     printNotes()
 }
-
-
-/*
-Note
-    .find({important: true})
-    .then(result => {
-        result.forEach(note => {
-            console.log(note)
-        })
-        mongoose.connection.close()
-    })
-    
-    note
-    .save()
-    .then(response => {
-        console.log(`note: ${note} was saved!`)
-        mongoose.connection.close()
-    })
-*/

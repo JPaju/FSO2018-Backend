@@ -10,4 +10,4 @@ const Contact = mongoose.model('Contact', {
     number: String
 })
 
-module.exports(Contact)
+module.exports = Contact

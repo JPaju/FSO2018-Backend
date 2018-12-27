@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+const Contact = require('./modules/contact')
+
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
@@ -36,21 +38,34 @@ let contacts = [
 
 
 app.get('/api/persons', (request, response) => {
-  response.json(contacts)
+  Contact
+    .find({})
+    .then(contacts => contacts.map(formatContact))
+    .then(formattedContacts => {
+      response.json(formattedContacts)
+    })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const contact = contacts.find(c => c.id === id)
-  contact ?
-    res.json(contact) :
-    res.status(404).end()
+app.get('/api/persons/:id', (request, response) => {
+  Contact
+    .findById(request.params.id)
+    .then(formatContact)
+    .then(contact => {
+      if (contact) response.json(contact)
+      else response.status(404).end()
+    })
+    .catch(err => {
+      response.status(400).send({error: 'invalid id-format'})
+    })
 })
 
 app.get('/info', (request, response) => {
-  response.writeHead(200, { 'Content-Type': 'text/html' })
-  response.write(`<div>Puhelinluettelossa on ${contacts.length} yhteystietoa </div>`)
-  response.end("<div>" + new Date().toString() + "</div>")
+  Contact
+    .find({})
+    .then(contacts => {
+      response.write(`<div>Puhelinluettelossa on ${contacts.length} yhteystietoa </div>`)
+      response.end("<div>" + new Date().toString() + "</div>")
+    })
 })
 
 app.post('/api/persons', (request, response) => {
@@ -76,6 +91,16 @@ app.delete('/api/persons/:id', (request, response) => {
   contacts = contacts.filter(c => c.id !== id)
   response.status(204).end()
 })
+
+
+//Formats contact to from database format to frontend
+const formatContact = (contact) => {
+  const formattedContact = { ...contact._doc, id: contact._id }
+  delete formattedContact._id
+  delete formattedContact.__v
+  return formattedContact
+}
+
 
 const generateId = () => Math.floor(Math.random() * 10000)
 

@@ -13,29 +13,6 @@ app.use(express.static('build'))
 morgan.token('json',(req, res) => JSON.stringify(req['body']))
 app.use(morgan(':method :url :json :status :res[content-length] - :response-time ms'))
 
-let contacts = [
-  {
-    name: "Arto Hellas",
-    number: "040-123456",
-    id: 1
-  },
-  {
-    name: "Martti Tienari",
-    number: "040-123456",
-    id: 2
-  },
-  {
-    name: "Arto Järvinen",
-    number: "040-123456",
-    id: 3
-  },
-  {
-    name: "Lea Kutvonen",
-    number: "040-123456",
-    id: 4
-  }
-]
-
 
 app.get('/api/persons', (request, response) => {
   Contact
@@ -45,6 +22,7 @@ app.get('/api/persons', (request, response) => {
       response.json(formattedContacts)
     })
 })
+
 
 app.get('/api/persons/:id', (request, response) => {
   Contact
@@ -59,6 +37,7 @@ app.get('/api/persons/:id', (request, response) => {
     })
 })
 
+
 app.get('/info', (request, response) => {
   Contact
     .find({})
@@ -68,13 +47,12 @@ app.get('/info', (request, response) => {
     })
 })
 
+
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
   if (!body.number || !body.name)
     return response.status(400).json({ error: 'name and number is required' })
-  //if (contacts.some(c => c.name === body.name))
-  //  return response.status(400).json({ error: 'name must be unique' })
     
   const contact = new Contact({
     name: body.name,
@@ -87,22 +65,30 @@ app.post('/api/persons', (request, response) => {
     .then(contact => response.json(contact))
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  
+  const contact = {
+    name: request.body.name,
+    number: request.body.number
+  }
+  
+  Contact
+    .findOneAndUpdate({ _id: request.params.id }, contact, { new: true } )
+    .then(Contact.format)
+    .then(contact => response.json(contact))
+    .catch(err => {
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
+
+
 app.delete('/api/persons/:id', (request, response) => {
   Contact
     .findByIdAndRemove(request.params.id)
     .then(response.status(204).end())
     .catch(err => console.error("ERROR:", err.message))
-  
-  
-  /*
-  const id = Number(request.params.id)
-  contacts = contacts.filter(c => c.id !== id)
-  response.status(204).end()
-  */
 })
 
-
-const generateId = () => Math.floor(Math.random() * 10000)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

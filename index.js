@@ -73,17 +73,18 @@ app.post('/api/persons', (request, response) => {
 
   if (!body.number || !body.name)
     return response.status(400).json({ error: 'name and number is required' })
-  if (contacts.some(c => c.name === body.name))
-    return response.status(400).json({ error: 'name must be unique' })
+  //if (contacts.some(c => c.name === body.name))
+  //  return response.status(400).json({ error: 'name must be unique' })
     
-  const contact = {
+  const contact = new Contact({
     name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
+    number: body.number
+  })
 
-  contacts = contacts.concat(contact)
-  response.json(body)
+  contact
+    .save()
+    .then(Contact.format)
+    .then(contact => response.json(contact))
 })
 
 app.delete('/api/persons/:id', (request, response) => {

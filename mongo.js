@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb://usr:passwd@ds123372.mlab.com:23372/fso-notes'
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
-mongoose.connect(url ,{useNewUrlParser: true})
+const url = process.env.MONGODB_URL
+mongoose.connect(url, {useNewUrlParser: true})
 
 const Note = mongoose.model('Note', {
     content: String,
@@ -10,12 +11,43 @@ const Note = mongoose.model('Note', {
     important: Boolean
 })
 
-const note = new Note({
-    content: 'HTTP-protokollan tärkeimmät metodit ovat GET ja POST',
-    date: new Date(),
-    important: true
-})
+const saveNote = ({content, important}) => {
+    const note = new Note({
+        content: content,
+        date: new Date(),
+        important: important
+    })
 
+    note
+        .save()
+        .then(response => {
+            mongoose.connection.close()
+        })
+}
+
+const printNotes = () => {
+    Note
+        .find({})
+        .then(result => {
+            result.forEach((note, index) => {
+                console.log(`${++index}. ${note.content}, tärkeä: ${note.important}`)
+            })
+            mongoose.connection.close()
+        })
+}
+
+const content = process.argv[2]
+const important = !!process.argv[3] && (process.argv[3] === 'true')
+
+if (content) {
+    console.log(`Lisätään muistiinpano ${content}, tärkeä:${important}`)
+    saveNote({content, important})
+} else {
+    printNotes()
+}
+
+
+/*
 Note
     .find({important: true})
     .then(result => {
@@ -24,9 +56,8 @@ Note
         })
         mongoose.connection.close()
     })
-
-/*
-note
+    
+    note
     .save()
     .then(response => {
         console.log(`note: ${note} was saved!`)

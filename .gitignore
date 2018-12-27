@@ -5,6 +5,7 @@
 
 #development
 rest_client/
+*.env
 
 # misc
 .DS_Store

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
-const url = 'mongodb://usr:passwd@ds135974.mlab.com:35974/fso-phonebook'
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+
+const url = process.env.MONGODB_CONTACTS_URL
 mongoose.connect(url, {useNewUrlParser: true})
 
 const Contact = mongoose.model('Contact', {

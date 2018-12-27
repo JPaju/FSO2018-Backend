@@ -40,7 +40,7 @@ let contacts = [
 app.get('/api/persons', (request, response) => {
   Contact
     .find({})
-    .then(contacts => contacts.map(formatContact))
+    .then(contacts => contacts.map(Contact.format))
     .then(formattedContacts => {
       response.json(formattedContacts)
     })
@@ -49,7 +49,7 @@ app.get('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
   Contact
     .findById(request.params.id)
-    .then(formatContact)
+    .then(Contact.format)
     .then(contact => {
       if (contact) response.json(contact)
       else response.status(404).end()
@@ -91,15 +91,6 @@ app.delete('/api/persons/:id', (request, response) => {
   contacts = contacts.filter(c => c.id !== id)
   response.status(204).end()
 })
-
-
-//Formats contact to from database format to frontend
-const formatContact = (contact) => {
-  const formattedContact = { ...contact._doc, id: contact._id }
-  delete formattedContact._id
-  delete formattedContact.__v
-  return formattedContact
-}
 
 
 const generateId = () => Math.floor(Math.random() * 10000)

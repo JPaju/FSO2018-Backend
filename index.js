@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 
+const Note = require('./modules/note')
+
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
@@ -13,7 +15,11 @@ app.use(morgan(':method :url :json :status :res[content-length] - :response-time
 
 
 app.get('/api/notes', (req, res) => {
-  res.json(notes)
+  Note
+    .find({})
+    .then(notes => {
+      res.json(notes.map(formatNote))
+    })
 })
 
 app.get('/api/notes/:id', (req, res) => {
@@ -35,11 +41,11 @@ app.get('/api/notes/:id', (req, res) => {
 
 app.post('/api/notes', (request, response) => {
   const body = request.body
+  
   if (!body.content)
     return response.status(400).json({ error: 'content is required' })
 
   const note = new Note({
-    id: generateId(),
     content: body.content,
     date: new Date(),
     important: body.important || false

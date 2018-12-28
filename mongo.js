@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const url = process.env.MONGODB_NOTES_URL
-mongoose.connect(url, {useNewUrlParser: true})
+mongoose.connect(url, { useNewUrlParser: true })
 
 const Note = mongoose.model('Note', {
     content: String,
@@ -11,7 +11,7 @@ const Note = mongoose.model('Note', {
     important: Boolean
 })
 
-const saveNote = ({content, important}) => {
+const saveNote = ({ content, important }) => {
     const note = new Note({
         content: content,
         date: new Date(),
@@ -20,7 +20,7 @@ const saveNote = ({content, important}) => {
 
     note
         .save()
-        .then(response => {
+        .then(() => {
             mongoose.connection.close()
         })
 }
@@ -41,7 +41,7 @@ const important = !!process.argv[3] && (process.argv[3] === 'true')
 
 if (content) {
     console.log(`Lisätään muistiinpano ${content}, tärkeä:${important}`)
-    saveNote({content, important})
+    saveNote({ content, important })
 } else {
     printNotes()
 }

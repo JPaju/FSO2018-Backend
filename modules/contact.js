@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const url = process.env.MONGODB_CONTACTS_URL
 mongoose.set('useCreateIndex', true)
-mongoose.connect(url, {useNewUrlParser: true})
+mongoose.connect(url, { useNewUrlParser: true })
 
 const ContactSchema = new mongoose.Schema({
     name: {

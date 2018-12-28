@@ -63,6 +63,11 @@ app.post('/api/persons', (request, response) => {
     .save()
     .then(Contact.format)
     .then(contact => response.json(contact))
+    .catch(err => {
+      if (err.code === 11000 && err.name === 'MongoError') {
+        response.status(400).send({ error: 'name must be unique' })
+      }
+    })
 })
 
 app.put('/api/persons/:id', (request, response) => {

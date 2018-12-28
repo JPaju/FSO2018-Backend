@@ -2,100 +2,25 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const morgan = require('morgan')
+const mongoose = require('mongoose')
+const middleware = require('./utils/middleware')
+const notesRouter = require('./controllers/notes')
 
-const Note = require('./modules/note')
+//Connect to database
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+mongoose
+    .connect(process.env.MONGODB_NOTES_URL, { useNewUrlParser: true })
+    .then(() => console.log('Connected to database', process.env.MONGODB_NOTES_URL))
+    .catch(err => console.log(err.message))
 
-app.use(bodyParser.json())
 app.use(cors())
+app.use(bodyParser.json())
 app.use(express.static('build'))
+app.use(middleware.logger())
 
-morgan.token('json', (req) => JSON.stringify(req['body']))
-app.use(morgan(':method :url :json :status :res[content-length] - :response-time ms'))
+app.use('/api/notes', notesRouter)
 
-
-app.get('/api/notes', (req, res) => {
-    Note
-        .find({})
-        .then(notes => {
-            res.json(notes.map(formatNote))
-        })
-})
-
-app.get('/api/notes/:id', (req, res) => {
-    Note
-        .findById(req.params.id)
-        .then(formatNote)
-        .then(note => {
-            if (note) {
-                res.json(note)
-            } else {
-                res.status(404).end()
-            }
-        })
-        .catch(() => {
-            res.status(400).send({ error: 'invalid id-format' })
-        })
-})
-
-
-app.post('/api/notes', (request, response) => {
-    const body = request.body
-
-    if (!body.content)
-        return response.status(400).json({ error: 'content is required' })
-
-    const note = new Note({
-        content: body.content,
-        date: new Date(),
-        important: body.important || false
-    })
-
-    note
-        .save()
-        .then(formatNote)
-        .then(savedNote => response.json(savedNote))
-})
-
-
-app.put('/api/notes/:id', (request, response) => {
-    const body = request.body
-
-    const note = {
-        content: body.content,
-        important: body.important
-    }
-
-    Note
-        .findOneAndUpdate({ _id: request.params.id }, note, { new: true })
-        .then(formatNote)
-        .then(updatedNote => response.json(updatedNote))
-        .catch(error => {
-            console.log(error)
-            response.status(400).send({ error: 'malformatted id' })
-        })
-})
-
-
-app.delete('/api/notes/:id', (req, res) => {
-    Note
-        .findByIdAndRemove(req.params.id)
-        .then(() => {
-            res.status(204).end()
-        })
-        .catch(() => {
-            res.status(400).send({ error: 'invalid id-format' })
-        })
-})
-
-
-//Formats note to from database format to frontend
-const formatNote = (note) => {
-    const formattedNote = { ...note._doc, id: note._id }
-    delete formattedNote._id
-    delete formattedNote.__v
-    return formattedNote
-}
+app.use(middleware.error)
 
 
 //Start application on Heroku-binded port or port 3001

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
+    "start": "node src/index.js",
+    "watch": "nodemon src/index.js",
     "lint": "eslint .",
     "test": "echo \"Error: no tests made yet.\" && exit 1"
   },

@@ -5,6 +5,7 @@ const Blog = require('../models/blog')
 blogsRouter.get('/', (request, response) => {
     Blog
         .find({})
+        .then(response => response.map(Blog.format))
         .then(blogs => response.json(blogs))
 })
 
@@ -13,7 +14,8 @@ blogsRouter.post('/', (request, response) => {
 
     blog
         .save()
-        .then(result => response.status(201).json(result))
+        .then(blog.format)
+        .then(blog => response.status(201).json(Blog.format(blog)))
         .catch(err => {
             response.status(400)
             if (err.code === 11000)

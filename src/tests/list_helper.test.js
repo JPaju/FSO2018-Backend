@@ -92,3 +92,43 @@ describe('favoriteBlog', () => {
     })
 
 })
+
+
+describe('mostBlogs', () => {
+
+    test('of empty array', () => {
+        expect(listHelper.mostBlogs([])).toBeUndefined()
+    })
+
+    test('of single blog', () => {
+        expect(listHelper.mostBlogs(singleBlog)).toEqual(
+            { author: singleBlog[0].author, blogs: 1 }
+        )
+    })
+
+    test('of many blogs', () => {
+        expect(listHelper.mostBlogs(blogs)).toEqual({
+            author: 'Robert C. Martin',
+            blogs: 3
+        })
+    })
+})
+
+
+describe('mostLikes', () => {
+
+    test('of empty array', () => {
+        expect(listHelper.mostLikes([])).toBeUndefined()
+    })
+
+    test('of single blog', () => {
+        expect(listHelper.mostLikes(singleBlog)).toEqual({ author: singleBlog[0].author, likes: singleBlog[0].likes })
+    })
+
+    test('of many blogs', () => {
+        expect(listHelper.mostLikes(blogs)).toEqual({
+            author: 'Edsger W. Dijkstra',
+            likes: 17
+        })
+    })
+})

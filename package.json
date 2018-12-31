@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "watch": "nodemon src/index.js",
-    "lint": "eslint .",
-    "test": "jest --verbose"
+    "start": "NODE_ENV=production node src/index.js",
+    "watch": "NODE_ENV=development nodemon src/index.js",
+    "test": "NODE_ENV=test jest --verbose",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,8 @@
   "devDependencies": {
     "eslint": "^5.11.1",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.6"
+    "nodemon": "^1.18.6",
+    "supertest": "^3.3.0"
   },
   "jest": {
     "testEnvironment": "node"

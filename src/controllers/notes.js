@@ -10,12 +10,9 @@ const formatNote = (note) => {
     }
 }
 
-notesRouter.get('/', (req, res) => {
-    Note
-        .find({})
-        .then(notes => {
-            res.json(notes.map(formatNote))
-        })
+notesRouter.get('/', async (req, res) => {
+    const notes = await Note.find({})
+    res.json(notes.map(formatNote))
 })
 
 notesRouter.get('/:id', (req, res) => {

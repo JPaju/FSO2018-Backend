@@ -41,14 +41,13 @@ const blogsInDb = async () => {
 }
 
 const blogInDb = async (id) => {
-    const blog = await Blog.findById(id)
-    return format(blog)
+    const result = await Blog.findById(id)
+    return format(result)
 }
 
 const format = (blog) => {
-    const formattedBlog = { ...blog._doc }
-    delete formattedBlog._id
-    delete formattedBlog.__v
+    const formattedBlog = Blog.format(blog)
+    delete formattedBlog.id
     return formattedBlog
 }
 

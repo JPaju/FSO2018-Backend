@@ -6,17 +6,18 @@ const { initialBlogs, blogsInDb, blogInDb, format } = require('./test_helper')
 
 describe('When there is content in the DB', async () => {
 
-    beforeAll(async () => {
-        await Blog.remove({})
-
-        const blogs = initialBlogs.map(b => new Blog(b))
-        await Promise.all(blogs.map(b => b.save()))
-    })
 
 
-    describe('GET', () => {
+    describe('GET /api/blogs', () => {
 
-        test('/api/blogs: all blogs are returned as json', async () => {
+        beforeEach(async () => {
+            await Blog.remove({})
+
+            const blogs = initialBlogs.map(b => new Blog(b))
+            await Promise.all(blogs.map(b => b.save()))
+        })
+
+        test('all blogs are returned as json', async () => {
 
             await api
                 .get('/api/blogs')
@@ -30,7 +31,11 @@ describe('When there is content in the DB', async () => {
     })
 
 
-    describe('POST', () => {
+    describe('POST /api/blogs', () => {
+
+        beforeEach(async () => {
+            await Blog.remove({})
+        })
 
         test('valid blog can be added', async () => {
 
@@ -109,14 +114,14 @@ describe('When there is content in the DB', async () => {
         })
     })
 
-    describe('PUT', () => {
+    describe('PUT /api/blogs/:id', () => {
         let blogToEdit
 
-        beforeAll(async () => {
+        beforeEach(async () => {
             blogToEdit = new Blog({
                 title: 'HTTP PUT',
-                author: 'Test Tester',
-                url: 'https://testing.testing/',
+                author: 'Put Tester',
+                url: 'https://testing.put/',
                 likes: 10
             })
             await blogToEdit.save()
@@ -137,12 +142,12 @@ describe('When there is content in the DB', async () => {
         })
     })
 
-    describe('DELETE', () => {
+    describe('DELETE /api/blogs/:id', () => {
 
         const blogToDelete = new Blog({
             title: 'HTTP DELETE',
-            author: 'Test Tester',
-            url: 'https://testing.testing/'
+            author: 'Delete Tester',
+            url: 'https://testing.delete/'
         })
 
         beforeEach(async () => {
@@ -162,4 +167,9 @@ describe('When there is content in the DB', async () => {
     })
 })
 
-afterAll(() => server.close())
+afterAll(async () => {
+    await Blog.remove({})
+    const blogs = initialBlogs.map(b => new Blog(b))
+    await Promise.all(blogs.map(b => b.save()))
+    server.close()
+})

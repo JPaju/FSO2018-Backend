@@ -34,6 +34,16 @@ blogsRouter.post('/', (request, response) => {
         })
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+    try {
+        const updatedBLog = await Blog
+            .findOneAndUpdate({ _id: request.params.id }, request.body, { new: true })
+        response.json(updatedBLog)
+    } catch (error) {
+        response.status(400).send({ error: 'Update was unsuccesfull' })
+    }
+})
+
 blogsRouter.delete('/:id', async (request, response) => {
 
     try {

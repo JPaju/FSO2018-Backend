@@ -2,11 +2,11 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb, format } = require('./test_helper')
+const { initialBlogs, blogsInDb, blogInDb, format } = require('./test_helper')
 
 describe('When there is content in the DB', async () => {
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         await Blog.remove({})
 
         const blogs = initialBlogs.map(b => new Blog(b))
@@ -31,8 +31,6 @@ describe('When there is content in the DB', async () => {
 
 
     describe('POST', () => {
-
-
 
         test('valid blog can be added', async () => {
 
@@ -111,12 +109,40 @@ describe('When there is content in the DB', async () => {
         })
     })
 
+    describe('PUT', () => {
+        let blogToEdit
+
+        beforeAll(async () => {
+            blogToEdit = new Blog({
+                title: 'HTTP PUT',
+                author: 'Test Tester',
+                url: 'https://testing.testing/',
+                likes: 10
+            })
+            await blogToEdit.save()
+        })
+
+        test('Modifies field correctly', async () => {
+
+            const response = await api
+                .put(`/api/blogs/${blogToEdit._id}`)
+                .send({ likes: 111 })
+                .expect(200)
+                .expect('Content-Type', /application\/json/)
+
+            const updatedBlog = await blogInDb(blogToEdit._id)
+
+            expect(response.body.likes).toBe(111)
+            expect(updatedBlog.likes).toBe(111)
+        })
+    })
+
     describe('DELETE', () => {
 
         const blogToDelete = new Blog({
             title: 'HTTP DELETE',
             author: 'Test Tester',
-            url: 'https://testing.testing/',
+            url: 'https://testing.testing/'
         })
 
         beforeEach(async () => {

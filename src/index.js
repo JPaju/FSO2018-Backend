@@ -7,12 +7,14 @@ const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
 
 app.use(cors())
 app.use(bodyParser.json())
 app.use(middleware.logger())
 
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
 app.use(middleware.error)
 
 //Connect to MongoDB

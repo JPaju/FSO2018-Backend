@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/JPaju/FSO2018-Backend#readme",
   "dependencies": {
+    "bcrypt": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",

@@ -1,13 +1,6 @@
 const Blog = require('../models/blog')
 
 
-const testBlog = {
-    title: 'React patterns',
-    author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
-    likes: 7,
-}
-
 const initialBlogs = [
     {
         title: 'Go To Statement Considered Harmful',
@@ -63,7 +56,6 @@ const nonExistingId = async () => {
 
 module.exports = {
     initialBlogs,
-    testBlog,
     blogsInDb,
     format,
     nonExistingId

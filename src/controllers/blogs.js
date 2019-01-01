@@ -14,7 +14,7 @@ blogsRouter.post('/', (request, response) => {
     let body = request.body
 
     if (!body.title || !body.author || !body.url) {
-        response.status(400).json({ error: 'Title, author, url and likes are required' })
+        return response.status(400).json({ error: 'Author and url are required' })
     }
 
     if (!body.likes) body.likes = 0

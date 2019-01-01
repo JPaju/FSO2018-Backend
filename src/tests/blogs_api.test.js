@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb, nonExistingId } = require('./test_helper')
+const { initialBlogs, blogsInDb } = require('./test_helper')
 
 describe('When there is content in the DB', async () => {
 
@@ -61,7 +61,7 @@ describe('When there is content in the DB', async () => {
             expect(blogsAfterPost).toContainEqual(testBlog)
         })
 
-        test('if likes not spesified, defaults to 0', async () => {
+        test('defaults to likes 0 if not spesified', async () => {
 
             const testBlog = {
                 title: 'React patterns',
@@ -78,6 +78,36 @@ describe('When there is content in the DB', async () => {
             const addedBlog = await Blog.findById(response.body.id)
 
             expect(addedBlog.likes).toBe(0)
+        })
+
+        test('400 returned when not spesifying title', async () => {
+            const testBlog = {
+                author: 'Michael Chan',
+                url: 'https://reactpatterns.com/',
+                likes: 7
+            }
+
+            await api
+                .post('/api/blogs')
+                .send(testBlog)
+                .expect(400)
+                .expect('Content-Type', /application\/json/)
+
+        })
+
+        test('400 returned when not spesifying url', async () => {
+            const testBlog = {
+                title: 'React patterns',
+                author: 'Michael Chan',
+                likes: 7
+            }
+
+            await api
+                .post('/api/blogs')
+                .send(testBlog)
+                .expect(400)
+                .expect('Content-Type', /application\/json/)
+
         })
     })
 })

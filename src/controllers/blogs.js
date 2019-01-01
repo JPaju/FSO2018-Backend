@@ -10,6 +10,13 @@ blogsRouter.get('/', (request, response) => {
 })
 
 blogsRouter.post('/', (request, response) => {
+
+    const body = request.body
+
+    if (!body.title || !body.author || !body.url || !body.likes) {
+        response.status(400).json({ error: 'Title, author, url and likes are required' })
+    }
+
     const blog = new Blog(request.body)
 
     blog

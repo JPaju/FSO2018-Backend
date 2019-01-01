@@ -13,26 +13,30 @@ usersRouter.get('/', (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
     const body = request.body
+    let hash
 
-    if (!body.name || !body.password || !body.username)
-        return response.status(400).send({ error: 'Name, username and password are required!' })
+    if (body.password.length > 3)
+        hash = await bcrypt.hash(body.password, 10)
+    else
+        return response.status(400).send({ error: 'Password length must be over 3 characters' })
 
-    const hash = await bcrypt.hash(body.password, 10)
 
     try {
         const user = new User({
             name: body.name,
             username: body.username,
             passwordHash: hash,
-            adult: body.adult || false
+            adult: body.adult
         })
 
         const createdUser = await user.save()
-        response.json(createdUser)
+        response.json(User.format(createdUser))
 
     } catch (error) {
         if (error.code === 11000)
             response.status(400).send({ error: 'Username must be unique' })
+        else if (error.name === 'ValidationError')
+            response.status(400).send({ error: 'Name, username and password are required' })
         else
             response.status(400).send({ error: 'Creating user failed' })
 

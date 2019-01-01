@@ -2,13 +2,23 @@ const mongoose = require('mongoose')
 mongoose.set('useCreateIndex', true)
 
 const userSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true
+    },
     username: {
         type: String,
-        unique: true
+        unique: true,
+        required: true
     },
-    passwordHash: String,
-    adult: Boolean
+    passwordHash: {
+        type:String,
+        required: true
+    },
+    adult: {
+        type:Boolean,
+        default: true
+    }
 })
 
 userSchema.statics.format = function(user) {

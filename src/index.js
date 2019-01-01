@@ -17,6 +17,7 @@ app.use(middleware.error)
 
 //Connect to MongoDB
 mongoose
+    .set('useFindAndModify', false)
     .connect(config.mongoUrl, { useNewUrlParser: true } )
     .then(console.log('Connected to database'))
     .catch(err => console.err(err.message))

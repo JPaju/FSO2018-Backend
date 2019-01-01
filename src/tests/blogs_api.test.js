@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb } = require('./test_helper')
+const { initialBlogs, blogsInDb, format } = require('./test_helper')
 
 describe('When there is content in the DB', async () => {
 
@@ -108,6 +108,30 @@ describe('When there is content in the DB', async () => {
                 .expect(400)
                 .expect('Content-Type', /application\/json/)
 
+        })
+    })
+
+    describe('DELETE', () => {
+
+        const blogToDelete = new Blog({
+            title: 'HTTP DELETE',
+            author: 'Test Tester',
+            url: 'https://testing.testing/',
+        })
+
+        beforeEach(async () => {
+            await blogToDelete.save()
+        })
+
+        test('204 is returned and blog is removed', async () => {
+
+            await api
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .expect(204)
+
+            const afterDeletion = await blogsInDb()
+
+            expect(afterDeletion).not.toContainEqual(format(blogToDelete))
         })
     })
 })

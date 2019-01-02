@@ -11,7 +11,18 @@ const error = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
+const tokenExtractor = (request, response, next) => {
+    try {
+        const auth = request.get('authorization')
+        const authStartIndex = auth.indexOf(' ')
+        if (authStartIndex > 0)
+            request.token = auth.substring(authStartIndex+1)
+    } catch(e) {null}
+    next()
+}
+
 module.exports = {
     logger,
-    error
+    error,
+    tokenExtractor
 }

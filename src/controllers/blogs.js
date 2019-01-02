@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 const { getUserFromToken } = require('./login')
 
 
@@ -13,7 +12,6 @@ blogsRouter.get('/', (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-
 
     const user = await getUserFromToken(request)
 
@@ -64,7 +62,15 @@ blogsRouter.put('/:id', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
 
     try {
-        await Blog.findByIdAndRemove(request.params.id)
+        const user = await getUserFromToken(request)
+        const blog = await Blog
+            .findById(request.params.id)
+
+        if (!user || blog.user.toString() !== user._id.toString()) {
+            return response.status(401).send({ error: 'Invalid token' })
+        }
+
+        await blog.remove()
         response.status(204).end()
     } catch (exception) {
         response.status(204).end()

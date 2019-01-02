@@ -19,30 +19,18 @@ loginRouter.post('/', async (request, response) => {
 })
 
 
-const getToken = (request) => {
-    const auth = request.get('authorization')
-    if (auth && auth.toLowerCase().startsWith('bearer')) {
-        return auth.substring(7)
-    }
-    return null
-}
-
 const getUserFromToken = async (request) => {
     try {
-        const token = getToken(request)
+        const token = request.token
         const decoded = jwt.verify(token, process.env.SECRET)
         if (token && decoded.id) {
             return await User.findById(decoded.id)
-        } else {
-            return null
         }
-    } catch (error) {
-        return null
-    }
+    } catch (error) {null}
+    return null
 }
 
 module.exports = {
     loginRouter,
-    getToken,
     getUserFromToken
 }

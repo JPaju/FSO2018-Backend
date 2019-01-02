@@ -6,8 +6,8 @@ const User = require('../models/user')
 usersRouter.get('/', (request, response) => {
     User
         .find({})
-        .then(users => users.map(User.format))
-        .then(formattedUsers => response.json(formattedUsers))
+        .populate('blogs', { title: 1, author: 1, url: 1, likes: 1, _id: 1 })
+        .then(users => response.json(users.map(User.format)))
         .catch(() => response.status(500).send({ error: 'something bad happened' }))
 })
 

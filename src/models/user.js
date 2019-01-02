@@ -18,7 +18,11 @@ const userSchema = new mongoose.Schema({
     adult: {
         type:Boolean,
         default: true
-    }
+    },
+    blogs: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Blog',
+    }]
 })
 
 userSchema.statics.format = function(user) {

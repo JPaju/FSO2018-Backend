@@ -11,7 +11,14 @@ const blogSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    likes: Number
+    likes: {
+        type: Number,
+        default: 0
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 blogSchema.statics.format = function(blog) {

@@ -27,18 +27,22 @@ const getToken = (request) => {
     return null
 }
 
-const validToken = (request) => {
+const getUserFromToken = async (request) => {
     try {
         const token = getToken(request)
         const decoded = jwt.verify(token, process.env.SECRET)
-        return (token && decoded.id)
+        if (token && decoded.id) {
+            return await User.findById(decoded.id)
+        } else {
+            return null
+        }
     } catch (error) {
-        return false
+        return null
     }
 }
 
 module.exports = {
     loginRouter,
     getToken,
-    validToken
+    getUserFromToken
 }

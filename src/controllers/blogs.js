@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const { validToken } = require('./login')
 
 
 blogsRouter.get('/', (request, response) => {
@@ -14,6 +15,9 @@ blogsRouter.get('/', (request, response) => {
 blogsRouter.post('/', async (request, response) => {
 
 
+    if (!validToken(request)) {
+        return response.status(401).send({ error: 'Invalid token' })
+    }
 
     if (!request.body.title || !request.body.author || !request.body.url) {
         return response.status(400).json({ error: 'Author and url are required' })

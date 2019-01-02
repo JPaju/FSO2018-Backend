@@ -15,7 +15,7 @@ usersRouter.post('/', async (request, response) => {
     const body = request.body
     let hash
 
-    if (body.password.length > 3)
+    if (body.password && body.password.length > 3)
         hash = await bcrypt.hash(body.password, 10)
     else
         return response.status(400).send({ error: 'Password length must be over 3 characters' })
@@ -30,7 +30,7 @@ usersRouter.post('/', async (request, response) => {
         })
 
         const createdUser = await user.save()
-        response.json(User.format(createdUser))
+        response.status(201).json(User.format(createdUser))
 
     } catch (error) {
         if (error.code === 11000)

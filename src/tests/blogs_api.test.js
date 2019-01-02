@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
-const { initialBlogs, blogsInDb, blogInDb, format } = require('./test_helper')
+const { initialBlogs, blogsInDb, blogInDb, formatBlog } = require('./test_helper')
 
 describe('When there is content in the DB', async () => {
 
@@ -162,7 +162,7 @@ describe('When there is content in the DB', async () => {
 
             const afterDeletion = await blogsInDb()
 
-            expect(afterDeletion).not.toContainEqual(format(blogToDelete))
+            expect(afterDeletion).not.toContainEqual(formatBlog(blogToDelete))
         })
     })
 })
